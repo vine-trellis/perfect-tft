@@ -40,12 +40,12 @@ struct Trait {
 }
 
 #[derive(Debug)]
-struct Team <'a> {
+struct Team<'a> {
     champions: &'a Vec<&'a Champion>,
     traits: HashMap<&'a String, u8>,
 }
 
-impl <'a> Team <'a> {
+impl<'a> Team<'a> {
     fn get_traits(champions: &'a Vec<&'a Champion>) -> HashMap<&'a String, u8> {
         let mut traits = HashMap::new();
         for champion in champions {
@@ -68,12 +68,20 @@ impl <'a> Team <'a> {
         }
     }
 }
-impl fmt::Display for Team <'_> {
+impl fmt::Display for Team<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let team_repr = self.champions.iter().map(|champion| format!("{} ({})", &champion.name, &champion.cost.to_string())).join(", ");
-        let trait_repr = self.traits.iter().map(|(k, v)| format!("{} -> {}", k, &v.to_string())).join(", ");
+        let team_repr = self
+            .champions
+            .iter()
+            .map(|champion| format!("{} ({})", &champion.name, &champion.cost.to_string()))
+            .join(", ");
+        let trait_repr = self
+            .traits
+            .iter()
+            .map(|(k, v)| format!("{} -> {}", k, &v.to_string()))
+            .join(", ");
         write!(f, "Champions: {} | Traits: {}", team_repr, trait_repr)
-    } 
+    }
 }
 
 fn read_json(path: &str) -> String {
@@ -91,7 +99,7 @@ fn read_json(path: &str) -> String {
     let mut s = String::new();
     match file.read_to_string(&mut s) {
         Err(why) => panic!("couldn't read {}: {}", display, why),
-        Ok(_) => {},
+        Ok(_) => {}
     }
     s
 }
