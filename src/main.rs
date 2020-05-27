@@ -1,4 +1,5 @@
 use itertools::Itertools;
+use rayon::ThreadPoolBuilder;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt;
@@ -78,7 +79,7 @@ impl fmt::Display for Team<'_> {
         let trait_repr = self
             .traits
             .iter()
-            .map(|(k, v)| format!("{} -> {}", k, &v.to_string()))
+            .map(|(r#trait, count)| format!("{} -> {}", &r#trait, &count.to_string()))
             .join(", ");
         write!(f, "Champions: {} | Traits: {}", team_repr, trait_repr)
     }
@@ -134,22 +135,18 @@ fn main() {
     let trait_map: HashMap<&String, &Trait> =
         trait_vec.iter().map(|x| (&x.name, x)).into_iter().collect();
 
+    let pool = ThreadPoolBuilder::new().num_threads(4).build().unwrap();
+
     // enumeration
     for i in 1..=4 {
         println!("Level {} perfect comps:", i);
-        let mut champ_combos = champs.into_iter().combinations(i);
-
-        loop {
-            let champ_combo = champ_combos.next();
-            match champ_combo {
-                Some(x) => {
-                    let team: Team = Team::from_champions(&x);
-                    if check_perfect(&trait_map, &team) {
-                        println!("{}", &team);
-                    }
+        champs.iter().combinations(i).for_each(|champ_combo| {
+            pool.install(|| {
+                let team = Team::from_champions(&champ_combo);
+                if check_perfect(&trait_map, &team) {
+                    println!("{}", &team);
                 }
-                None => break,
-            }
-        }
+            })
+        });
     }
 }
