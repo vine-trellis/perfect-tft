@@ -1,13 +1,12 @@
-use std::path::Path;
-use std::fs::File;
-use std::fmt;
-use std::io::prelude::*;
-use std::collections::HashMap;
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::fmt;
+use std::fs::File;
+use std::io::prelude::*;
+use std::path::Path;
 
-#[derive(Debug)]
-#[derive(Serialize, Deserialize, Clone, Hash)]
+#[derive(Debug, Serialize, Deserialize, Clone, Hash)]
 #[serde(rename_all = "camelCase")]
 struct Champion {
     name: String,
@@ -23,18 +22,16 @@ impl PartialEq for Champion {
 impl Eq for Champion {}
 impl fmt::Display for Champion {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-       write!(f, "{}", self.name)
+        write!(f, "{}", self.name)
     }
 }
-#[derive(Debug)]
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct Set {
     min: u8,
     // max: Option<u8>,
 }
 
-#[derive(Debug)]
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct Trait {
     key: String,
     name: String,
@@ -43,34 +40,40 @@ struct Trait {
 }
 
 #[derive(Debug)]
-struct Team {
-    champions: Vec<Champion>,
+struct Team <'a> {
+    champions: &'a Vec<&'a Champion>,
+    traits: HashMap<&'a String, u8>,
 }
 
-impl Team {
-    fn get_traits(&self) -> HashMap<&String, u8> {
+impl <'a> Team <'a> {
+    fn get_traits(champions: &'a Vec<&'a Champion>) -> HashMap<&'a String, u8> {
         let mut traits = HashMap::new();
-        for champion in &self.champions {
+        for champion in champions {
             for r#trait in &champion.traits {
-                traits.insert(r#trait, match traits.get(&r#trait) {
-                    Some(x) => x + 1u8,
-                    None => 1u8,
-                }
-            );
+                traits.insert(
+                    r#trait,
+                    match traits.get(&r#trait) {
+                        Some(x) => x + 1u8,
+                        None => 1u8,
+                    },
+                );
             }
         }
         traits
     }
+    pub fn from_champions(champions: &'a Vec<&'a Champion>) -> Team<'a> {
+        Team {
+            champions: champions,
+            traits: Team::get_traits(champions),
+        }
+    }
 }
-// impl fmt::Display for Team {
-//     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-//         let mut repr = String::from("");
-//         for champion in self.champions {
-//             repr.push_str(format!("{}", champion.name));
-//         }
-//         write!("{}",repr)
-//     }
-// }
+impl fmt::Display for Team <'_> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let team_repr = self.champions.iter().map(|x| &x.name).join(", ");
+        write!(f, "{}", team_repr)
+    }
+}
 
 fn read_json(path: &str) -> String {
     let path = Path::new(&path);
@@ -79,83 +82,65 @@ fn read_json(path: &str) -> String {
     let mut file = match File::open(&path) {
         // The `description` method of `io::Error` returns a string that
         // describes the error
-        Err(why) => panic!("couldn't open {}: {}", display,
-                                                   why),
+        Err(why) => panic!("couldn't open {}: {}", display, why),
         Ok(file) => file,
     };
 
     // Read the file contents into a string, returns `io::Result<usize>`
     let mut s = String::new();
     match file.read_to_string(&mut s) {
-        Err(why) => panic!("couldn't read {}: {}", display,
-                                                    why),
-        Ok(_) => {}
-        // println!("successfully read {}", display),
+        Err(why) => panic!("couldn't read {}: {}", display, why),
+        Ok(_) => {} // println!("successfully read {}", display),
     }
     s
 }
 
-fn check_perfect(r#traits: &HashMap<&String, &Trait>, team: &Team ) -> bool {
-    let team_traits = team.get_traits();
-    for key in team_traits.keys() {
+fn check_perfect(r#traits: &HashMap<&String, &Trait>, team: &Team) -> bool {
+    for key in team.traits.keys() {
         let mut mins: Vec<u8> = Vec::new();
         let _dumb_none: Vec<Set> = Vec::new();
         for set in match r#traits.get(key) {
             Some(x) => &x.sets,
-            None => &_dumb_none
-        }  
-        {
+            None => &_dumb_none,
+        } {
             mins.push(set.min);
         }
-        if !mins.contains(match team_traits.get(key)  {
+        if !mins.contains(match team.traits.get(key) {
             Some(x) => x,
             None => &0u8,
-        }){
-            return false
+        }) {
+            return false;
         }
     }
     true
 }
 
 fn main() {
-    for i in 1..10 {
-        println!("{}", i);
-        let champ_data = read_json("src/assets/champions.json");
-        let champs: Vec<Champion> = serde_json::from_str(&champ_data).unwrap();
-        // println!("{}", champs.len());
+    // setup
+    let champ_data = read_json("src/assets/champions.json");
+    let champs: &Vec<Champion> = &serde_json::from_str(&champ_data).unwrap();
 
-        let trait_data = read_json("src/assets/traits.json");
-        let trait_vec: Vec<Trait> = serde_json::from_str(&trait_data).unwrap();
-        let mut trait_map: HashMap<&String, &Trait> = HashMap::new();
-        for r#trait in &trait_vec {
-            trait_map.insert(&r#trait.name, r#trait);
-        }
+    let trait_data = read_json("src/assets/traits.json");
+    let trait_vec: Vec<Trait> = serde_json::from_str(&trait_data).unwrap();
+    let trait_map: HashMap<&String, &Trait> =
+        trait_vec.iter().map(|x| (&x.name, x)).into_iter().collect();
 
+    // enumeration
+    for i in 1..=4 {
+        println!("Level {} perfect comps:", i);
         let mut champ_combos = champs.into_iter().combinations(i);
-        // let mut teams: Vec<Team> = Vec::new();
+
         loop {
             let champ_combo = champ_combos.next();
             match champ_combo {
                 Some(x) => {
-                    let team: Team = Team {champions : x};
+                    let team: Team = Team::from_champions(&x);
                     if check_perfect(&trait_map, &team) {
-                        println!("{:?}", &team);
+                        println!("{}", &team);
                     }
-                },
-                None => {
-                    break
                 }
+                None => break,
             }
-
         }
-        // for champ_combo in champ_combos {
-        //     let team: Team = Team {champions : champ_combo};
-        //     teams.push(team);
-        // }
-        // for team in &teams {
-        //     if check_perfect(&trait_map, team) {
-        //         println!("{:?}", team);
-        //     }
-        // }
     }
 }
