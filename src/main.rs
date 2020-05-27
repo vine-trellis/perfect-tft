@@ -135,10 +135,11 @@ fn main() {
     let trait_map: HashMap<&String, &Trait> =
         trait_vec.iter().map(|x| (&x.name, x)).into_iter().collect();
 
+    // multi-threading
     let pool = ThreadPoolBuilder::new().num_threads(4).build().unwrap();
 
     // enumeration
-    for i in 1..=4 {
+    for i in 1..=10 {
         println!("Level {} perfect comps:", i);
         champs.iter().combinations(i).for_each(|champ_combo| {
             pool.install(|| {
