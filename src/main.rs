@@ -4,7 +4,9 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt;
 use std::fs::File;
+use std::fs::OpenOptions;
 use std::io::prelude::*;
+use std::io::SeekFrom;
 use std::path::Path;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Hash)]
@@ -28,8 +30,8 @@ impl fmt::Display for Champion {
 }
 #[derive(Debug, Serialize, Deserialize)]
 struct Set {
-    min: u8,
-    // max: Option<u8>,
+    min: Option<u8>,
+    max: Option<u8>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -40,7 +42,7 @@ struct Trait {
     sets: Vec<Set>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 struct Team<'a> {
     champions: &'a Vec<&'a Champion>,
     traits: HashMap<&'a String, u8>,
@@ -105,6 +107,60 @@ fn read_json(path: &str) -> String {
     s
 }
 
+fn create_json(path: &str, content: &str) {
+    let path = Path::new(&path);
+    let display = path.display();
+    // Open the path in read-only mode, returns `io::Result<File>`
+    let mut file = match OpenOptions::new()
+        .create(true)
+        .write(true)
+        .truncate(true)
+        .open(path)
+    {
+        // The `description` method of `io::Error` returns a string that
+        // describes the error
+        Err(why) => panic!("couldn't open {}: {}", display, why),
+        Ok(file) => file,
+    };
+    match file.write_all(content.as_bytes()) {
+        Err(why) => panic!("couldn't write to {}: {}", display, why),
+        Ok(_) => println!("successfully started writing to {}", display),
+    }
+}
+
+fn append_json(path: &str, json: &str) {
+    let path = Path::new(&path);
+    let display = path.display();
+    // Open the path in read-only mode, returns `io::Result<File>`
+    let mut file = match OpenOptions::new().append(true).open(&path) {
+        // The `description` method of `io::Error` returns a string that
+        // describes the error
+        Err(why) => panic!("couldn't open {}: {}", display, why),
+        Ok(file) => file,
+    };
+    match file.write_all(format!("{},\n", json).as_bytes()) {
+        Err(why) => panic!("couldn't write to {}: {}", display, why),
+        Ok(_) => {}
+    }
+}
+
+fn append_json_with_end_seek(path: &str, json: &str, seek: i64) {
+    let path = Path::new(&path);
+    let display = path.display();
+    // Open the path in read-only mode, returns `io::Result<File>`
+    let mut file = match OpenOptions::new().write(true).open(&path) {
+        // The `description` method of `io::Error` returns a string that
+        // describes the error
+        Err(why) => panic!("couldn't open {}: {}", display, why),
+        Ok(file) => file,
+    };
+    file.seek(SeekFrom::End(seek)).unwrap();
+    match file.write_all(format!("{}", json).as_bytes()) {
+        Err(why) => panic!("couldn't write to {}: {}", display, why),
+        Ok(_) => println!("successfully wrote to {}", display),
+    }
+}
+
 fn check_perfect(r#traits: &HashMap<&String, &Trait>, team: &Team) -> bool {
     for key in team.traits.keys() {
         let mut mins: Vec<u8> = Vec::new();
@@ -113,7 +169,7 @@ fn check_perfect(r#traits: &HashMap<&String, &Trait>, team: &Team) -> bool {
             Some(x) => &x.sets,
             None => &_dumb_none,
         } {
-            mins.push(set.min);
+            mins.push(set.min.unwrap());
         }
         if !mins.contains(match team.traits.get(key) {
             Some(x) => x,
@@ -139,15 +195,19 @@ fn main() {
     let pool = ThreadPoolBuilder::new().num_threads(4).build().unwrap();
 
     // enumeration
-    for i in 1..=10 {
+    for i in 1..=4 {
         println!("Level {} perfect comps:", i);
+        let results_path = format!("results/set3/level{}.json", &i);
+        create_json(&results_path, "[ \n");
         champs.iter().combinations(i).for_each(|champ_combo| {
             pool.install(|| {
                 let team = Team::from_champions(&champ_combo);
                 if check_perfect(&trait_map, &team) {
                     println!("{}", &team);
+                    append_json(&results_path, &serde_json::to_string(&team).unwrap());
                 }
             })
         });
+        append_json_with_end_seek(&results_path, "\n]", -2_i64);
     }
 }
