@@ -195,7 +195,7 @@ fn main() {
     let pool = ThreadPoolBuilder::new().num_threads(4).build().unwrap();
 
     // enumeration
-    for i in 1..=4 {
+    for i in 1..=9 {
         println!("Level {} perfect comps:", i);
         let results_path = format!("results/set3/level{}.json", &i);
         create_json(&results_path, "[ \n");
