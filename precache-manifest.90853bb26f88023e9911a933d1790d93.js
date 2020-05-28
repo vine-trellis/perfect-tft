@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "fcfa343eb5372e617753690e9c7f1721",
+    "revision": "682dfeaaad05549499288c488891b288",
     "url": "/perfect-tft/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/perfect-tft/static/css/2.af3c1da9.chunk.css"
   },
   {
-    "revision": "9b3af573ad55963e3a33",
+    "revision": "ccc639feb8b6b2e263a1",
     "url": "/perfect-tft/static/css/main.c554460a.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/perfect-tft/static/js/2.3319f256.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "9b3af573ad55963e3a33",
-    "url": "/perfect-tft/static/js/main.cce94ebb.chunk.js"
+    "revision": "ccc639feb8b6b2e263a1",
+    "url": "/perfect-tft/static/js/main.8ff354fe.chunk.js"
   },
   {
     "revision": "277a2fc10b62ec47ec2e",

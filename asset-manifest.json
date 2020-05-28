@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/perfect-tft/static/css/main.c554460a.chunk.css",
-    "main.js": "/perfect-tft/static/js/main.cce94ebb.chunk.js",
-    "main.js.map": "/perfect-tft/static/js/main.cce94ebb.chunk.js.map",
+    "main.js": "/perfect-tft/static/js/main.8ff354fe.chunk.js",
+    "main.js.map": "/perfect-tft/static/js/main.8ff354fe.chunk.js.map",
     "runtime-main.js": "/perfect-tft/static/js/runtime-main.a1ea675b.js",
     "runtime-main.js.map": "/perfect-tft/static/js/runtime-main.a1ea675b.js.map",
     "static/css/2.af3c1da9.chunk.css": "/perfect-tft/static/css/2.af3c1da9.chunk.css",
     "static/js/2.3319f256.chunk.js": "/perfect-tft/static/js/2.3319f256.chunk.js",
     "static/js/2.3319f256.chunk.js.map": "/perfect-tft/static/js/2.3319f256.chunk.js.map",
     "index.html": "/perfect-tft/index.html",
-    "precache-manifest.89804c50054d91e5de20148bbbcf0174.js": "/perfect-tft/precache-manifest.89804c50054d91e5de20148bbbcf0174.js",
+    "precache-manifest.90853bb26f88023e9911a933d1790d93.js": "/perfect-tft/precache-manifest.90853bb26f88023e9911a933d1790d93.js",
     "service-worker.js": "/perfect-tft/service-worker.js",
     "static/css/2.af3c1da9.chunk.css.map": "/perfect-tft/static/css/2.af3c1da9.chunk.css.map",
     "static/css/main.c554460a.chunk.css.map": "/perfect-tft/static/css/main.c554460a.chunk.css.map",
@@ -20,6 +20,6 @@
     "static/css/2.af3c1da9.chunk.css",
     "static/js/2.3319f256.chunk.js",
     "static/css/main.c554460a.chunk.css",
-    "static/js/main.cce94ebb.chunk.js"
+    "static/js/main.8ff354fe.chunk.js"
   ]
 }
