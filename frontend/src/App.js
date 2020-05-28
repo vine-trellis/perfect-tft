@@ -35,12 +35,11 @@ function App() {
       <Container className="App-container">
         {
           perfectCompJsons.map((json, idx) =>
-            <Card className="Team-card">
+            <Card className="Team-card" key={idx}>
               <Card.Header>{`Level ${idx + 1} perfect comps`}</Card.Header>
               <ListGroup>
-
                 {
-                  json.map(team => <ListGroupItem><Team team={team} /></ListGroupItem>)
+                  json.map((team, idx) => <ListGroupItem key={idx}><Team team={team} /></ListGroupItem>)
                 }
               </ListGroup>
 

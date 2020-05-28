@@ -15,8 +15,8 @@ export default function Team({ team: { champions, traits } }) {
           <Row>
             {
               champions.map(champion =>
-                <Col xs={2}>
-                  <Champion key={champion.championId} champion={champion} />
+                <Col lg={2} md={3} sm={4} xs={6} key={champion.championId}>
+                  <Champion champion={champion} />
                 </Col>
               )
             }
@@ -26,8 +26,8 @@ export default function Team({ team: { champions, traits } }) {
           <Row>
             {
               Object.entries(traits).map(([name, value]) =>
-                <Col xs={2}>
-                  <Trait key={name} name={name} value={value} />
+                <Col lg={2} md={3} sm={4} xs={6} key={name}>
+                  <Trait name={name} value={value} />
                 </Col>
               )
             }
