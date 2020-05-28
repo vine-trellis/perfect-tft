@@ -1,0 +1,15 @@
+.Trait {
+  height: 64px;
+  width: 64px;
+}
+
+.Trait-image {
+  height: 64px;
+  width: 64px;
+}
+
+.Trait-value {
+  position: absolute;
+  bottom: 0;
+  background-color: aliceblue;
+}

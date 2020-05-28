@@ -1,0 +1,11 @@
+.Champion {
+  position: relative;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.Champion-level {
+  position: absolute;
+  bottom: 0;
+  background-color: aliceblue;
+}
