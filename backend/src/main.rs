@@ -183,10 +183,10 @@ fn check_perfect(r#traits: &HashMap<&String, &Trait>, team: &Team) -> bool {
 
 fn main() {
     // setup
-    let champ_data = read_json("src/assets/champions.json");
+    let champ_data = read_json("src/assets/set3update/champions.json");
     let champs: &Vec<Champion> = &serde_json::from_str(&champ_data).unwrap();
 
-    let trait_data = read_json("src/assets/traits.json");
+    let trait_data = read_json("src/assets/set3update/traits.json");
     let trait_vec: Vec<Trait> = serde_json::from_str(&trait_data).unwrap();
     let trait_map: HashMap<&String, &Trait> =
         trait_vec.iter().map(|x| (&x.name, x)).into_iter().collect();
@@ -197,7 +197,7 @@ fn main() {
     // enumeration
     for i in 1..=9 {
         println!("Level {} perfect comps:", i);
-        let results_path = format!("results/set3/level{}.json", &i);
+        let results_path = format!("results/set3update/level{}.json", &i);
         create_json(&results_path, "[ \n");
         champs.iter().combinations(i).for_each(|champ_combo| {
             pool.install(|| {
