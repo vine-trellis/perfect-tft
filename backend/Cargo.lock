@@ -131,6 +131,7 @@ name = "perfect-tft"
 version = "1.0.0"
 dependencies = [
  "itertools",
+ "num_cpus",
  "rayon",
  "serde",
  "serde_json",

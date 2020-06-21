@@ -1,4 +1,5 @@
 use itertools::Itertools;
+use num_cpus;
 use rayon::ThreadPoolBuilder;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -192,7 +193,8 @@ fn main() {
         trait_vec.iter().map(|x| (&x.name, x)).into_iter().collect();
 
     // multi-threading
-    let pool = ThreadPoolBuilder::new().num_threads(4).build().unwrap();
+    let num_cpus = num_cpus::get();
+    let pool = ThreadPoolBuilder::new().num_threads(num_cpus).build().unwrap();
 
     // enumeration
     for i in 1..=9 {
