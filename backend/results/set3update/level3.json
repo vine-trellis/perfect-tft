@@ -1,0 +1,5 @@
+[ 
+{"champions":[{"name":"Ahri","championId":"TFT3_Ahri","cost":2,"traits":["Star Guardian","Sorcerer"]},{"name":"Janna","championId":"TFT3_Janna","cost":5,"traits":["Star Guardian","Paragon"]},{"name":"Syndra","championId":"TFT3_Syndra","cost":3,"traits":["Star Guardian","Sorcerer"]}],"traits":{"Sorcerer":2,"Star Guardian":3,"Paragon":1}},
+{"champions":[{"name":"Ahri","championId":"TFT3_Ahri","cost":2,"traits":["Star Guardian","Sorcerer"]},{"name":"Janna","championId":"TFT3_Janna","cost":5,"traits":["Star Guardian","Paragon"]},{"name":"Zoe","championId":"TFT3_Zoe","cost":1,"traits":["Star Guardian","Sorcerer"]}],"traits":{"Paragon":1,"Star Guardian":3,"Sorcerer":2}},
+{"champions":[{"name":"Janna","championId":"TFT3_Janna","cost":5,"traits":["Star Guardian","Paragon"]},{"name":"Syndra","championId":"TFT3_Syndra","cost":3,"traits":["Star Guardian","Sorcerer"]},{"name":"Zoe","championId":"TFT3_Zoe","cost":1,"traits":["Star Guardian","Sorcerer"]}],"traits":{"Paragon":1,"Sorcerer":2,"Star Guardian":3}}
+]
